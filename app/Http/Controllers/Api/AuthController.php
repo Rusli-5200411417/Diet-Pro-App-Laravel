@@ -49,7 +49,8 @@ class AuthController extends Controller {
     }
 
     $user = User::create(array_merge($request->all(), [
-      'password'  => bcrypt($request->password)
+      'password'  => bcrypt($request->password),
+      'role' => 'user'
     ]));
 
     if  ($user)  {
@@ -69,9 +70,14 @@ class AuthController extends Controller {
   }
 
   public function error($message) {
+    // return  response()->json([
+    //   'code'  =>  400,
+    //   'message' =>  $message
+    // ],  400);
     return  response()->json([
-      'code'  =>  400,
-      'message' =>  $message
+      'ok'  => false,
+      'error_code'  =>  400,
+      'description' =>  $message
     ],  400);
   }
 

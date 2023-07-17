@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('berat_badan')->nullable();
             $table->string('kebutuhan_kalori')->nullable();
             $table->string('usia')->nullable();
-            $table->string('role');
+            $table->string('role'); 
             $table->rememberToken();
             $table->timestamps();
         });
