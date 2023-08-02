@@ -24,9 +24,6 @@
                     <div class="mb-3">
                         <label for="username" class="form-label">Username</label>
                         <input type="text" name="username" class="form-control" id="username" placeholder="Masukan Username" value="{{ old('username') }}" required>
-                        @error('username')
-                            <div class="alert alert-danger mt-2">{{ $message }}</div>
-                        @enderror
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label">Password</label>
@@ -36,9 +33,6 @@
                                 <i id="password-visibility-icon" class="fa fa-eye"></i>
                             </button>
                         </div>
-                        @error('password')
-                            <div class="alert alert-danger mt-2">{{ $message }}</div>
-                        @enderror
                     </div>
                     <div class="mb-3">
                         <div class="d-grid">

@@ -22,22 +22,30 @@ class AuthController extends Controller
             'username' => 'required',
             'password' => 'required',
         ]);
-    
+
         if ($validator->fails()) {
             return redirect()->route('login')->withErrors($validator)->withInput();
         }
-    
+
         $credentials = $request->only('username', 'password');
-    
+
         if (Auth::attempt($credentials)) {
-            Session::flash('success', 'Login Successful!');
-            return redirect()->route('dashboard');
-        } else {
-            $validator->errors()->add('username', 'Invalid username. Please try again.');
-            $validator->errors()->add('password', 'Invalid password. Please try again.');
-            return redirect()->route('login')->withErrors($validator)->withInput();
+            $user = Auth::user();
+
+            if ($user->role == 'admin') {
+                Session::flash('success', 'Login Successful!');
+                return redirect()->route('dashboard');
+            } else {
+                Auth::logout();
+                $validator->errors()->add('', 'You are not authorized to access this dashboard.');
+                return redirect()->route('login')->withErrors($validator)->withInput();
+            }
         }
+
+        $validator->errors()->add('error', 'Invalid username or password. Please try again.');
+        return redirect()->route('login')->withErrors($validator)->withInput();
     }
+
     
     
 
