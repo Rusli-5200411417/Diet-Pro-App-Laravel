@@ -61,6 +61,41 @@ class AuthController extends Controller {
 
   }
 
+  public function update(Request $request, $id) {
+
+    $user = User::where('id', $id)->first();
+    if ($user) {
+      $user->update($request->all());
+      return $this->success($user);
+    }
+
+    return  $this->error("tidak ada user");
+
+  }
+
+  public function upload(Request $request, $id)  {
+    $user = User::where('id', $id)->first();
+    if ($user) {
+      $filename = "";
+      if ($request->foto_profil) {
+          $foto_profil = $request->foto_profil->getClientOriginalName();
+          $foto_profil  = str_replace(' ','', $foto_profil);
+          $foto_profil  = date('Hs').rand(1,999)."_". $foto_profil;
+          $filename = $foto_profil;
+          $request->foto_profil->storeAs('public/user', $foto_profil);
+      } else {
+        return $this->error("kirim foto profil");
+      }
+
+      $user->update([
+        'foto_profil'=>$filename
+      ]);
+      return $this->success($user);
+    }
+
+    return  $this->error("User tidak ditemukan");
+  }
+
   public function success($data, $message = "success") {
     return  response()->json([
       'code'  =>  200,
