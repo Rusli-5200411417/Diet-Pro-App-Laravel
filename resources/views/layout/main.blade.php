@@ -235,7 +235,18 @@
     });
   </script>
 
+<script>
+  // Fungsi ini akan dijalankan saat pengguna memilih file
+  function handleFileSelect(event) {
+      document.getElementById('csvForm').submit(); // Mengirimkan form saat file terpilih
+  }
 
+  // Mendapatkan elemen input file
+  const fileInput = document.querySelector('input[name="csv_file"]');
+  
+  // Mendengarkan peristiwa 'change' pada input file
+  fileInput.addEventListener('change', handleFileSelect);
+</script>
 
 
 

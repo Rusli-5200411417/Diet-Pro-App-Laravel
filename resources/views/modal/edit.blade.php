@@ -21,7 +21,7 @@
               <!-- form start -->
               <div class="card-body">
                 <div class="form-group">
-                  <label for="">Nama Bahana</label>
+                  <label for="">Nama Bahan</label>
                   <input type="text" class="form-control" id="Nama_Bahan" placeholder="Nama Bahan" name="Nama_Bahan" value="{{$makanan->Nama_Bahan}}">
                 </div>
                 <div class="form-group">

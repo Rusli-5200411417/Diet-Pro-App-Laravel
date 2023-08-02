@@ -7,8 +7,6 @@ use App\Models\Makanan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Validator;
 
 class makananController extends Controller
