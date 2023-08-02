@@ -25,6 +25,7 @@
   <link rel="stylesheet" href="{{ asset ('lte/plugins/daterangepicker/daterangepicker.css')}}">
   <!-- summernote -->
   <link rel="stylesheet" href="{{ asset ('lte/plugins/summernote/summernote-bs4.min.css')}}">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
@@ -68,23 +69,23 @@
               </p>
             </a>
           </li>
-          {{-- <li class="nav-item menu-open">
-            <a href="#" class="nav-link ">
+           <li class="nav-item menu-open"> 
+            <a href="{{route('makanan')}}" class="nav-link ">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
-                Informasi
+                Data Makanan
               </p>
             </a>
           </li>
           <li class="nav-item menu-open">
-            <a href="#" class="nav-link ">
+            <a href="{{route('user')}}" class="nav-link ">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
-                Tiket
+                Data Pengguna
               </p>
             </a>
           </li>
-          <li class="nav-item menu-open">
+          {{-- <li class="nav-item menu-open"> 
             <a href="#" class="nav-link ">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
@@ -99,7 +100,7 @@
                 Transaksi
               </p>
             </a>
-          </li> --}}
+          </li> --}} 
           <li class="nav-item menu-open">
             <a href="{{route('logout')}}" class="nav-link ">
               @csrf
@@ -192,6 +193,51 @@
           timerProgressBar: true
       });
   }
-</script>>
+</script>
+
+  <script>
+    $(document).ready(function() {
+      // Fungsi pencarian data menggunakan AJAX
+      function performSearch(keyword, page) {
+        $.ajax({
+          url: "{{ route('search') }}",
+          type: "GET",
+          data: { keyword: keyword, page: page },
+          success: function(response) {
+            console.log("Search successful. Response: ", response);
+            // Memperbarui isi tabel dengan data yang sesuai dengan kata kunci pencarian
+            $("#makanan").html(response);
+          },
+          error: function(xhr) {
+            console.log("Search failed. Error response: ", xhr.responseText);
+          }
+        });
+      }
+
+      // Fungsi untuk meng-handle perubahan pada input pencarian
+      function handleSearchInput() {
+        var keyword = $("#searchInput").val().toUpperCase();
+        var page = 1; // You can set the page number here or dynamically based on user interaction
+        performSearch(keyword, page);
+      }
+
+      // Event listener untuk tombol pencarian
+      $("#searchButton").on('click', function() {
+        handleSearchInput();
+      });
+
+      // Event listener untuk input pencarian ketika user mengetik
+      $("#searchInput").on('keyup', function(event) {
+        if (event.keyCode === 13) {
+          handleSearchInput();
+        }
+      });
+    });
+  </script>
+
+
+
+
+
 </body>
 </html>
