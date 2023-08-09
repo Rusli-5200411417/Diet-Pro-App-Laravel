@@ -76,45 +76,64 @@ class AuthController extends Controller {
   }
 
   public function update(Request $request, $id) {
-    $user = User::where('id', $id)->first();
+    $user = User::find($id);
 
-    if ($user) {
-        // Simpan data lama sebelum pembaruan
-        $oldData = $user->toArray();
-
-        // Lakukan pembaruan data
-        $user->update($request->all());
-
-        // Cek apakah atribut yang mempengaruhi kebutuhan_kalori berubah
-        $attributesAffectingCalories = ['usia', 'jenis_kelamin', 'tinggi_badan', 'berat_badan', 'aktivitas'];
-        $shouldUpdateCalories = false;
-
-        foreach ($attributesAffectingCalories as $attribute) {
-            if ($request->has($attribute) && $request->$attribute !== $oldData[$attribute]) {
-                $shouldUpdateCalories = true;
-                break;
-            }
-        }
-
-        // Jika atribut berubah, hitung ulang dan perbarui kebutuhan_kalori
-        if ($shouldUpdateCalories) {
-            $newCalorieNeeds = $this->calculateCalorieNeeds(
-                $user->usia,
-                $user->jenis_kelamin,
-                $user->berat_badan,
-                $user->tinggi_badan,
-                $user->aktivitas
-            );
-
-            $user->kebutuhan_kalori = $newCalorieNeeds;
-            $user->save();
-        }
-
-        return $this->success($user);
+    if (!$user) {
+        return $this->error("Tidak ada user");
     }
 
-    return $this->error("tidak ada user");
+    // Validasi username
+    $usernameExists = User::where('username', $request->input('username'))
+                           ->where('id', '!=', $id)
+                           ->exists();
+
+    if ($usernameExists) {
+        return $this->error("Username sudah digunakan");
+    }
+
+    // Validasi email
+    $emailExists = User::where('email', $request->input('email'))
+                        ->where('id', '!=', $id)
+                        ->exists();
+
+    if ($emailExists) {
+        return $this->error("Email sudah digunakan");
+    }
+
+    // Simpan data lama sebelum pembaruan
+    $oldData = $user->toArray();
+
+    // Lakukan pembaruan data
+    $user->update($request->all());
+
+    // Cek apakah atribut yang mempengaruhi kebutuhan_kalori berubah
+    $attributesAffectingCalories = ['usia', 'jenis_kelamin', 'tinggi_badan', 'berat_badan', 'aktivitas'];
+    $shouldUpdateCalories = false;
+
+    foreach ($attributesAffectingCalories as $attribute) {
+        if ($request->has($attribute) && $request->$attribute !== $oldData[$attribute]) {
+            $shouldUpdateCalories = true;
+            break;
+        }
+    }
+
+    // Jika atribut berubah, hitung ulang dan perbarui kebutuhan_kalori
+    if ($shouldUpdateCalories) {
+        $newCalorieNeeds = $this->calculateCalorieNeeds(
+            $user->usia,
+            $user->jenis_kelamin,
+            $user->berat_badan,
+            $user->tinggi_badan,
+            $user->aktivitas
+        );
+
+        $user->kebutuhan_kalori = $newCalorieNeeds;
+        $user->save();
+    }
+
+    return $this->success($user);
 }
+
 
   
 
