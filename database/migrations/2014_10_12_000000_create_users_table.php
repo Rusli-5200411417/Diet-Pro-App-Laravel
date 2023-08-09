@@ -19,10 +19,12 @@ return new class extends Migration
             $table->string('email')->unique()->nullable();
             $table->string('password');
             $table->string('foto_profil')->nullable();
+            $table->string('jenis_kelamin')->nullable();
+            $table->string('usia')->nullable();
             $table->string('tinggi_badan')->nullable();
             $table->string('berat_badan')->nullable();
+            $table->string('aktivitas')->nullable();
             $table->string('kebutuhan_kalori')->nullable();
-            $table->string('usia')->nullable();
             $table->string('role'); 
             $table->rememberToken();
             $table->timestamps();

@@ -41,6 +41,11 @@ class AuthController extends Controller {
       'email' => 'required|unique:users',
       'username' => 'required|unique:users',
       'nama' => 'required',
+      'usia' => 'required',
+      'tinggi_badan' => 'required',
+      'berat_badan' => 'required',
+      'jenis_kelamin' => 'required',
+      'aktivitas' => 'required',
       'password' => 'required|min:6',
     ]);
 
@@ -48,10 +53,19 @@ class AuthController extends Controller {
       return $this->error($validasi->errors()->first());
     }
 
-    $user = User::create(array_merge($request->all(), [
-      'password'  => bcrypt($request->password),
+    $kebutuhan_kalori = $this->calculateCalorieNeeds(
+      $request->usia,
+      $request->jenis_kelamin,
+      $request->berat_badan,
+      $request->tinggi_badan,
+      $request->aktivitas
+  );
+
+  $user = User::create(array_merge($request->all(), [
+      'password' => bcrypt($request->password),
+      'kebutuhan_kalori' => $kebutuhan_kalori,
       'role' => 'user'
-    ]));
+  ]));
 
     if  ($user)  {
       return $this->success($user, 'Selamat Datang  '. $user->nama);
@@ -62,39 +76,77 @@ class AuthController extends Controller {
   }
 
   public function update(Request $request, $id) {
-
     $user = User::where('id', $id)->first();
+
     if ($user) {
-      $user->update($request->all());
-      return $this->success($user);
+        // Simpan data lama sebelum pembaruan
+        $oldData = $user->toArray();
+
+        // Lakukan pembaruan data
+        $user->update($request->all());
+
+        // Cek apakah atribut yang mempengaruhi kebutuhan_kalori berubah
+        $attributesAffectingCalories = ['usia', 'jenis_kelamin', 'tinggi_badan', 'berat_badan', 'aktivitas'];
+        $shouldUpdateCalories = false;
+
+        foreach ($attributesAffectingCalories as $attribute) {
+            if ($request->has($attribute) && $request->$attribute !== $oldData[$attribute]) {
+                $shouldUpdateCalories = true;
+                break;
+            }
+        }
+
+        // Jika atribut berubah, hitung ulang dan perbarui kebutuhan_kalori
+        if ($shouldUpdateCalories) {
+            $newCalorieNeeds = $this->calculateCalorieNeeds(
+                $user->usia,
+                $user->jenis_kelamin,
+                $user->berat_badan,
+                $user->tinggi_badan,
+                $user->aktivitas
+            );
+
+            $user->kebutuhan_kalori = $newCalorieNeeds;
+            $user->save();
+        }
+
+        return $this->success($user);
     }
 
-    return  $this->error("tidak ada user");
+    return $this->error("tidak ada user");
+}
 
-  }
+  
 
-  public function upload(Request $request, $id)  {
-    $user = User::where('id', $id)->first();
-    if ($user) {
-      $filename = "";
-      if ($request->foto_profil) {
-          $foto_profil = $request->foto_profil->getClientOriginalName();
-          $foto_profil  = str_replace(' ','', $foto_profil);
-          $foto_profil  = date('Hs').rand(1,999)."_". $foto_profil;
-          $filename = $foto_profil;
-          $request->foto_profil->storeAs('public/user', $foto_profil);
-      } else {
-        return $this->error("kirim foto profil");
-      }
+  private function calculateCalorieNeeds($usia, $jenis_kelamin, $berat_badan, $tinggi_badan, $aktivitas) {
+    // Define activity level multipliers
+    $activityMultipliers = [
+        'tidak aktif' => 1.2,
+        'latihan ringan' => 1.375, //1-3 hari per minggu
+        'latihan sedang' => 1.55, //3-5 hari per minggu
+        'aktif' => 1.725, //6-7 hari per minggu
+        'sangat aktif' => 1.9, //setiap hari perkerjaan fisik berat
+    ];
 
-      $user->update([
-        'foto_profil'=>$filename
-      ]);
-      return $this->success($user);
-    }
+    // Define gender-specific constants
+    $genderConstants = [
+        'laki-laki' => 66.5,
+        'perempuan' => 655.1,
+    ];
 
-    return  $this->error("User tidak ditemukan");
-  }
+    // Calculate BMR based on gender
+    $bmr = $genderConstants[$jenis_kelamin]
+        + (13.75 * $berat_badan)
+        + (5.003 * $tinggi_badan)
+        - (6.755 * $usia);
+
+    // Calculate calorie needs by multiplying BMR with activity multiplier
+    $calorieNeeds = $bmr * $activityMultipliers[$aktivitas];
+
+    $roundedCalorieNeeds = round($calorieNeeds);
+
+    return $roundedCalorieNeeds;
+}
 
   public function success($data, $message = "success") {
     return  response()->json([
