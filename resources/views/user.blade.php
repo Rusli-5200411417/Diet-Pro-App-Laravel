@@ -43,7 +43,7 @@
                     <td>{{$d->email}}</td>
                     <td>{{$d->username}}</td>
                     <td>{{$d->usia}}</td>
-                    <td>{{$d->kenutuhan_kalori}}</td>
+                    <td>{{$d->kebutuhan_kalori}}</td>
                     {{-- <td>
                       <div class="button">
                         <button class="btn btn-danger" data-toggle="modal" data-target="#modal-hapus{{$d->id}}">Hapus</button>
