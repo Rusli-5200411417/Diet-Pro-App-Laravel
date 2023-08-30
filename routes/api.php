@@ -25,5 +25,5 @@ Route::post('register', [AuthController::class, 'register']);
 Route::put('update-user/{id}', [AuthController::class, 'update']);
 Route::post('upload-user/{id}', [AuthController::class, 'upload']);
 
-Route::post('laporan', [LaporanController::class, 'index']);
+Route::post('laporan/{id}', [LaporanController::class, 'index']);
 Route::post('store/{id}', [LaporanController::class, 'store']);

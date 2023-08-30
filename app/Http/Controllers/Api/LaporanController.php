@@ -5,15 +5,13 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Laporan;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class LaporanController extends Controller
 {
-    public function index(){
-        $laporan = Laporan::all();
+    public function index(Request $request, $id){ 
+        $laporan = Laporan::where('id_user', $id)->get();
 
-        // var_dump($laporan);
-        return $this->success($laporan);
+    return $this->success($laporan);;
     }
 
     public function store(Request $request,$id)
