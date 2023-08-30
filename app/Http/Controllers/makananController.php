@@ -14,14 +14,14 @@ class makananController extends Controller
     public function index()
     {
         $makanans = Makanan::orderBy('Nama_Bahan', 'asc')->paginate(10);
-        return view('makanan', compact('makanans'));
+        $keyword = '';
+        return view('makanan', compact('makanans', 'keyword'));
     }
 
     public function search(Request $request)
     {
         $keyword = $request->input('keyword');
-
-        // Pemeriksaan apakah $keyword tidak bernilai null dan memiliki panjang minimal 3 karakter
+    
         if ($keyword !== null && strlen($keyword) >= 3) {
             $makanans = Makanan::where(function ($query) use ($keyword) {
                 $query->where('Nama_Bahan', 'LIKE', '%' . $keyword . '%')
@@ -29,14 +29,14 @@ class makananController extends Controller
                     ->orWhere('Nama_Bahan', 'REGEXP', '.*' . $keyword[0] . '.*' . $keyword[1] . '.*' . $keyword[2] . '.*')
                     ->orWhere('Jenis', 'REGEXP', '.*' . $keyword[0] . '.*' . $keyword[1] . '.*' . $keyword[2] . '.*');
             })->paginate(10);
+    
+            $makanans->appends(['keyword' => $keyword]); // Append the keyword to pagination links
         } else {
-            // Jika $keyword kurang dari 3 karakter atau null, tidak perlu melakukan pencarian
             $makanans = [];
         }
-
-        return view('table', compact('makanans'));
+    
+        return view('makanan', compact('makanans', 'keyword'));
     }
-
 
     public function importData(Request $request)
     {
@@ -49,40 +49,41 @@ class makananController extends Controller
                 $path = $request->file('csv_file')->getRealPath();
                 $data = array_map('str_getcsv', file($path));
 
-                // Get the header row to map column names
                 $headers = array_shift($data);
-                // Trim whitespace from column names
                 $headers = array_map('trim', $headers);
-
-                // Validate the header columns here if needed
-                // For example, you can check if required columns are present, etc.
 
                 $importedData = [];
                 foreach ($data as $row) {
-                    // Process each row and split the data containing double quotes
                     $rowData = [];
                     foreach ($row as $index => $value) {
                         $values = str_getcsv($value);
-                        // Remove unnecessary double quotes from each value
                         $values = array_map(function ($val) {
                             return trim($val, '"');
                         }, $values);
                         $rowData = array_merge($rowData, $values);
                     }
 
-                    // Check if the number of values in the row matches the number of headers
                     if (count($rowData) === count($headers)) {
                         $rowData = array_combine($headers, $rowData);
                         $importedData[] = $rowData;
                     } else {
                         Log::warning('Invalid row data: ' . json_encode($rowData));
+                        return redirect()->back()->with('error', 'Data CSV gagal diimpor.');
                     }
                 }
 
+                // Check if there are records with null nama_bahan before importing
+                $nullNamaBahanCount = Makanan::whereNull('Nama_Bahan')->count();
+                if ($nullNamaBahanCount > 0) {
+                    // Delete records with null nama_bahan
+                    Makanan::whereNull('Nama_Bahan')->delete();
+                    Log::info('Deleted records with null nama_bahan');  
+                }
+
                 foreach ($importedData as $rowData) {
-                    // Insert the data into the database
-                    Log::info('Data to be saved to the database: ' . json_encode($rowData));
-                    Makanan::create($rowData);
+                    if (!empty($rowData['Nama_Bahan'])) {
+                        Makanan::create($rowData);
+                    }
                 }
 
                 return redirect()->back()->with('success', 'Data CSV berhasil diimpor.');
@@ -90,10 +91,7 @@ class makananController extends Controller
 
             return redirect()->back()->with('error', 'Gagal memproses file CSV. Pastikan file yang diunggah benar.');
         } catch (\Exception $e) {
-            // Catat kesalahan
             Log::error('Kesalahan mengimpor data CSV: ' . $e->getMessage());
-
-            // Opsional, Anda bisa mengarahkan kembali dengan pesan kesalahan
             return redirect()->back()->with('error', 'Gagal mengimpor data CSV. Periksa format file dan coba lagi.');
         }
     }
@@ -146,4 +144,9 @@ class makananController extends Controller
         return redirect()->route('makanan');
     }
   
+    public function hapusSemua(){
+        Makanan::truncate();
+
+        return redirect()->route('makanan')->with('success', 'Semua data berhasil dihapus');
+    }
 }

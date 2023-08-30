@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('id_user')->nullable();
             $table->string('id_makanan')->nullable();
             $table->string('jenis')->nullable();
-            $table->string('kalori')->nullable();
             $table->timestamps();
         });
     }

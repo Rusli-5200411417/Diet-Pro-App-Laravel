@@ -42,6 +42,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/tambah', [makananController::class, 'tambah'])->name('makanan.tambah');
         Route::put('/edit/{id}', [makananController::class, 'edit'])->name('makanan.edit');
         Route::delete('/hapus/{id}', [makananController::class, 'hapus'])->name('makanan.hapus');
+        Route::delete('/hapusSemua', [makananController::class, 'hapusSemua'])->name('makanan.hapusSemua');
     });
 
     Route::group(['prefix' => 'user'], function () {

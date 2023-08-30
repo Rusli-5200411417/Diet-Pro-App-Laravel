@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="{{ asset ('lte/plugins/summernote/summernote-bs4.min.css')}}">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
-<body class="hold-transition sidebar-mini layout-fixed">
+<body class="hold-transition sidebar-mini layout-fixed sidebar-collapse">
 <div class="wrapper">
 
   <!-- Preloader -->
@@ -39,85 +39,103 @@
   <!-- /.navbar -->
 
   <!-- Main Sidebar Container -->
-  <aside class="main-sidebar sidebar-dark-primary elevation-4">
-    <!-- Brand Logo -->
-    <a href="index3.html" class="brand-link">
-      <img src="{{ asset('lte/dist/img/AdminLTELogo.png')}}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-      <span class="brand-text font-weight-light">Admin</span>
-    </a>
-
-    <!-- Sidebar -->
-    <div class="sidebar">
-      <!-- Sidebar user panel (optional) -->
-      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-        <div class="info">
-          <a href="#" class="d-block">ADMIN</a>
+ 
+    <!-- ... Sidebar content ... -->
+    <aside class="main-sidebar sidebar-dark-primary elevation-4">
+      <!-- Brand Logo -->
+    <div class="row">
+        <div class="col flex-column">
+            <button class="btn btn-dark ml-auto" id="toggleSidebar">
+              <i class="fas fa-bars"  style="opacity: .8"></i>   
+          </button>
         </div>
-      </div>
-
-
-      <!-- Sidebar Menu -->
-      <nav class="mt-2">
-        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-          <!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
-          <li class="nav-item menu-open">
-            <a href="{{route('dashboard')}}" class="nav-link  activate">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
-              <p>
-                Dashboard
-              </p>
-            </a>
-          </li>
-           <li class="nav-item menu-open"> 
-            <a href="{{route('makanan')}}" class="nav-link ">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
-              <p>
-                Data Makanan
-              </p>
-            </a>
-          </li>
-          <li class="nav-item menu-open">
-            <a href="{{route('user')}}" class="nav-link ">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
-              <p>
-                Data Pengguna
-              </p>
-            </a>
-          </li>
-          {{-- <li class="nav-item menu-open"> 
-            <a href="#" class="nav-link ">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
-              <p>
-                User
-              </p>
-            </a>
-          </li>
-          <li class="nav-item menu-open">
-            <a href="#" class="nav-link ">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
-              <p>
-                Transaksi
-              </p>
-            </a>
-          </li> --}} 
-          <li class="nav-item menu-open">
-            <a href="{{route('logout')}}" class="nav-link ">
-              @csrf
-              @method('DELETE')
-              <i class="nav-icon fas fa-tachometer-alt"></i>
-              <p>
-               Logout
-              </p>
-            </a>
-          </li>
-        </ul>
-      </nav>
-     
-      <!-- /.sidebar-menu -->
+        <div class="col">
+          <a  class="brand-link">
+            <img src="{{ asset('lte/dist/img/AdminLTELogo.png')}}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+            <span class="brand-text font-weight-light">Admin</span>
+          </a>
+        </div>
     </div>
-    <!-- /.sidebar -->
-  </aside>
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <!-- Sidebar user panel (optional) -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+          <div class="info">
+            <a href="#" class="d-block">ADMIN</a>
+          </div>
+
+        </div>
+
+        
+  
+  
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            <!-- Add icons to the links using the .nav-icon class
+                 with font-awesome or any other icon font library -->
+            <li class="nav-item menu-open">
+              <a href="{{route('dashboard')}}" class="nav-link  activate">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <p>
+                  Dashboard
+                </p>
+              </a>
+            </li>
+             <li class="nav-item menu-open"> 
+              <a href="{{route('makanan')}}" class="nav-link ">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <p>
+                  Data Makanan
+                </p>
+              </a>
+            </li>
+            <li class="nav-item menu-open">
+              <a href="{{route('user')}}" class="nav-link ">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <p>
+                  Data Pengguna
+                </p>
+              </a>
+            </li>
+            {{-- <li class="nav-item menu-open"> 
+              <a href="#" class="nav-link ">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <p>
+                  User
+                </p>
+              </a>
+            </li>
+            <li class="nav-item menu-open">
+              <a href="#" class="nav-link ">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <p>
+                  Transaksi
+                </p>
+              </a>
+            </li> --}} 
+            <li class="nav-item menu-open">
+              <a href="{{route('logout')}}" class="nav-link ">
+                @csrf
+                @method('DELETE')
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <p>
+                 Logout
+                </p>
+              </a>
+            </li>
+          </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+      </div>
+      <!-- /.sidebar -->
+      
+    </aside>
+    <!-- Button to toggle sidebar -->
+    
+
+
+ 
 
   @yield('content')
   <!-- /.content-wrapper -->
@@ -178,6 +196,15 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.4/dist/sweetalert2.min.css">
 
 <script>
+  $(document).ready(function () {
+      // Toggle sidebar when the toggle button is clicked
+      $('#toggleSidebar').click(function () {
+          $('body').toggleClass('sidebar-collapse');
+      });
+  });
+</script>
+
+<script>
   // Check if there is a success message in the session
   const successMessage = "{{ session('success') }}";
   if (successMessage) {
@@ -194,47 +221,6 @@
       });
   }
 </script>
-
-  <script>
-    $(document).ready(function() {
-      // Fungsi pencarian data menggunakan AJAX
-      function performSearch(keyword, page) {
-        $.ajax({
-          url: "{{ route('search') }}",
-          type: "GET",
-          data: { keyword: keyword, page: page },
-          success: function(response) {
-            console.log("Search successful. Response: ", response);
-            // Memperbarui isi tabel dengan data yang sesuai dengan kata kunci pencarian
-            $("#makanan").html(response);
-          },
-          error: function(xhr) {
-            console.log("Search failed. Error response: ", xhr.responseText);
-          }
-        });
-      }
-
-      // Fungsi untuk meng-handle perubahan pada input pencarian
-      function handleSearchInput() {
-        var keyword = $("#searchInput").val().toUpperCase();
-        var page = 1; // You can set the page number here or dynamically based on user interaction
-        performSearch(keyword, page);
-      }
-
-      // Event listener untuk tombol pencarian
-      $("#searchButton").on('click', function() {
-        handleSearchInput();
-      });
-
-      // Event listener untuk input pencarian ketika user mengetik
-      $("#searchInput").on('keyup', function(event) {
-        if (event.keyCode === 13) {
-          handleSearchInput();
-        }
-      });
-    });
-  </script>
-
 <script>
   // Fungsi ini akan dijalankan saat pengguna memilih file
   function handleFileSelect(event) {

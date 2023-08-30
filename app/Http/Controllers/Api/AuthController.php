@@ -81,25 +81,6 @@ class AuthController extends Controller {
     if (!$user) {
         return $this->error("Tidak ada user");
     }
-
-    // Validasi username
-    $usernameExists = User::where('username', $request->input('username'))
-                           ->where('id', '!=', $id)
-                           ->exists();
-
-    if ($usernameExists) {
-        return $this->error("Username sudah digunakan");
-    }
-
-    // Validasi email
-    $emailExists = User::where('email', $request->input('email'))
-                        ->where('id', '!=', $id)
-                        ->exists();
-
-    if ($emailExists) {
-        return $this->error("Email sudah digunakan");
-    }
-
     // Simpan data lama sebelum pembaruan
     $oldData = $user->toArray();
 

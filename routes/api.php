@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\LaporanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,3 +24,5 @@ Route::post('login', [AuthController::class, 'login']);
 Route::post('register', [AuthController::class, 'register']);
 Route::put('update-user/{id}', [AuthController::class, 'update']);
 Route::post('upload-user/{id}', [AuthController::class, 'upload']);
+
+Route::post('laporan', [LaporanController::class, 'index']);
